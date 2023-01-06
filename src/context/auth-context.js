@@ -9,7 +9,7 @@ const calcTokenExpireTime = function (expireTime) {
   const futureTime = expireTime;
 
   const remainingTime = currentTime - futureTime;
-  // console.log(remainingTime);
+  console.log(remainingTime);
 
   if (remainingTime < 0) {
     return true;
