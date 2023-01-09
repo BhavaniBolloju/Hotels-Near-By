@@ -34,7 +34,7 @@ function App() {
           )}
         </div>
 
-        <div className="bg-purple-100  w-[45%] p-10 overflow-y-scroll text-purple-900 scrollbar">
+        <div className="bg-purple-100  w-[45%] p-10 overflow-y-scroll text-purple-900 scrollbar border-r-8 border-purple-500">
           <h1 className="text-center text-3xl uppercase border-b-2 border-purple-200 pb-3">
             Hotels Near You
           </h1>

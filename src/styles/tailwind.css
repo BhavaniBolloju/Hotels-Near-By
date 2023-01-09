@@ -16,3 +16,18 @@ body {
   font-family: "Work Sans", sans-serif;
   font-size: 1.6rem;
 }
+
+.popupStyles .leaflet-popup-content-wrapper {
+  background-color: rgb(233 213 255);
+  margin-bottom: 6px;
+  padding: 2px 5px;
+  color: #46166b;
+}
+
+.popupStyles .leaflet-popup-tip-container {
+  margin-top: -6px;
+}
+
+.popupStyles .leaflet-popup-tip {
+  background-color: #dbc3ee;
+}

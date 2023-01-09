@@ -3,39 +3,18 @@ import { AuthContext } from "../context/auth-context";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import iconPerson from "./icon";
 
-function getDistanceBetweenTwoPoints(cord1, cord2) {
-  // console.log(cord1, cord2);
+import getDistance from "geolib/es/getDistance";
 
-  // if (cord1.lat === cord2.lat && cord1.lon === cord2.lon) {
-  //   return 0;
-  // }
-
-  const radlat1 = (Math.PI * cord1[0]) / 180;
-  const radlat2 = (Math.PI * cord2[0]) / 180;
-
-  const theta = cord1[1] - cord2[1];
-  const radtheta = (Math.PI * theta) / 180;
-
-  let dist =
-    Math.sin(radlat1) * Math.sin(radlat2) +
-    Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
-
-  if (dist > 1) {
-    dist = 1;
-  }
-
-  dist = Math.acos(dist);
-  dist = (dist * 180) / Math.PI;
-  dist = dist * 60 * 1.1515;
-  dist = dist * 1.609344;
-
-  return dist;
-}
+const distance = function (coords1, coords2) {
+  return getDistance(
+    { latitude: coords1[0], longitude: coords1[1] },
+    { latitude: coords2[0], longitude: coords2[1] }
+  );
+};
 
 function Map(props) {
   const { coords } = useContext(AuthContext);
-
-  console.log(coords);
+  // console.log(coords);
   const keyMap = Math.random();
   const position = coords;
 
@@ -76,12 +55,9 @@ function Map(props) {
         const { latitude: lat, longitude: lon } = hotel.geoCode;
         return (
           <Marker key={i} position={[lat, lon]} icon={iconPerson}>
-            <Popup className="text-sm">
+            <Popup className="popupStyles text-sm">
               <p>{hotel.name}</p>
-              <p>
-                Appr Distance :
-                {getDistanceBetweenTwoPoints(coords, [lat, lon]).toFixed(3)} km
-              </p>
+              <p>Appr Distance :{distance(coords, [lat, lon]) / 1000} km</p>
             </Popup>
             <SetViewOnClick />
           </Marker>
