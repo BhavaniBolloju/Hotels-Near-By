@@ -1,4 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
+const plugin = require("tailwindcss/plugin");
+
 module.exports = {
   future: {
     removeDeprecatedGapUtilities: true,
@@ -7,5 +10,13 @@ module.exports = {
   theme: {
     extend: {},
   },
-  plugins: [],
+  plugins: [
+    plugin(({ addBase, theme }) => {
+      addBase({
+        ".scrollbar::-webkit-scrollbar": {
+          display: "none",
+        },
+      });
+    }),
+  ],
 };

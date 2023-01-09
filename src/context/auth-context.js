@@ -1,15 +1,20 @@
 import { createContext, useState, useEffect, useCallback } from "react";
 
+//create auth context
+
 export const AuthContext = createContext({
   token: "",
+  coords: [],
+  hotelList: [],
+  hotelsNearBy: [],
 });
 
+//calc token
 const calcTokenExpireTime = function (expireTime) {
   const currentTime = Date.now();
   const futureTime = expireTime;
 
   const remainingTime = currentTime - futureTime;
-  console.log(remainingTime);
 
   if (remainingTime < 0) {
     return true;
@@ -18,10 +23,19 @@ const calcTokenExpireTime = function (expireTime) {
   }
 };
 
+//auth provider context
+
 export const AuthContextProvider = function (props) {
   const getStoredToken = localStorage.getItem("token");
 
   const [token, setToken] = useState(getStoredToken);
+  const [coords, setCoords] = useState();
+  // const [hotelList, setHotelList] = useState([]);
+  // const [hotelsNearBy, setHotelsNearBy] = useState([]);
+
+  // const hotelListHandler = useCallback(function (data) {
+  //   setHotelList((prev) => [...prev, ...data]);
+  // }, []);
 
   const getToken = useCallback(async () => {
     const auth = await fetch(
@@ -42,18 +56,26 @@ export const AuthContextProvider = function (props) {
     const response = await auth.json();
     const { access_token, expires_in } = response;
 
-    if (!getStoredToken) {
-      setToken(access_token);
-    }
+    setToken(access_token);
 
     localStorage.setItem("token", access_token);
 
     const futureTime = Date.now() + expires_in * 1000;
 
     localStorage.setItem("expireTime", futureTime);
-  }, [getStoredToken]);
+  }, []);
 
   useEffect(() => {
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const coords = pos.coords;
+        // setCoords([lat, lon]);
+        const { latitude: lat, longitude: lon } = coords;
+        setCoords([lat, lon]);
+      },
+      () => {}
+    );
+
     const getStoredExpireTime = localStorage.getItem("expireTime");
     const expireTimeLeft = calcTokenExpireTime(getStoredExpireTime);
 
@@ -66,11 +88,14 @@ export const AuthContextProvider = function (props) {
     getToken();
   }, [getToken]);
 
-  console.log(token);
-
   const contextValue = {
-    token: token,
+    token,
+    coords,
+    // hotelListHandler,
+    // hotelList,
+    // hotelsNearByHandler,
   };
+
   return (
     <AuthContext.Provider value={contextValue}>
       {props.children}
